@@ -252,6 +252,6 @@ If you're interested in understanding how this project works, here are some key 
 
 ---
 
-**Built with ❤️ by a beginner developer learning to code**
+**Built with Claude**
 
-*This project was created as part of a learning journey to understand web development fundamentals, API integration, and modern JavaScript.*
+*This project was created as part of an experiment in creating projects using agentic coding*
