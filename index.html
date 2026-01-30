@@ -5,206 +5,206 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Dashboard</title>
     <style>
-    /* Reset and Base Styles */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-    }
-
-    /* Main Container */
-    .container {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        max-width: 500px;
-        width: 100%;
-        padding: 40px;
-    }
-
-    /* Header Styles */
-    header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    header h1 {
-        font-size: 2.5rem;
-        color: #333;
-        margin-bottom: 10px;
-    }
-
-    header p {
-        color: #666;
-        font-size: 1rem;
-    }
-
-    /* Search Box */
-    .search-box {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 30px;
-    }
-
-    #cityInput {
-        flex: 1;
-        padding: 15px;
-        font-size: 1rem;
-        border: 2px solid #ddd;
-        border-radius: 10px;
-        outline: none;
-        transition: border-color 0.3s;
-    }
-
-    #cityInput:focus {
-        border-color: #667eea;
-    }
-
-    #searchBtn {
-        padding: 15px 30px;
-        font-size: 1rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    #searchBtn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-    }
-
-    #searchBtn:active {
-        transform: translateY(0);
-    }
-
-    /* Weather Display */
-    .weather-display {
-        text-align: center;
-        animation: fadeIn 0.5s;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
 
-    #cityName {
-        font-size: 2rem;
-        color: #333;
-        margin-bottom: 20px;
-    }
-
-    .weather-main {
-        margin-bottom: 30px;
-    }
-
-    .temperature {
-        font-size: 4rem;
-        font-weight: bold;
-        color: #667eea;
-        margin-bottom: 10px;
-    }
-
-    .unit {
-        font-size: 2rem;
-        color: #999;
-    }
-
-    #description {
-        font-size: 1.5rem;
-        color: #666;
-        text-transform: capitalize;
-    }
-
-    /* Weather Details Grid */
-    .weather-details {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-    }
-
-    .detail-item {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    .detail-item .label {
-        font-size: 0.9rem;
-        color: #999;
-        text-transform: uppercase;
-    }
-
-    .detail-item span:last-child {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #333;
-    }
-
-    /* Loading, Error, Hidden States */
-    .loading {
-        text-align: center;
-        font-size: 1.2rem;
-        color: #667eea;
-        padding: 20px;
-    }
-
-    .error-message {
-        background: #fee;
-        color: #c33;
-        padding: 15px;
-        border-radius: 10px;
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    /* Responsive Design for Mobile */
-    @media (max-width: 600px) {
-        .container {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
 
+        /* Main Container */
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
         header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* Search Box */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        #cityInput {
+            flex: 1;
+            padding: 15px;
+            font-size: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #cityInput:focus {
+            border-color: #667eea;
+        }
+
+        #searchBtn {
+            padding: 15px 30px;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #searchBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        #searchBtn:active {
+            transform: translateY(0);
+        }
+
+        /* Weather Display */
+        .weather-display {
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #cityName {
             font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .weather-main {
+            margin-bottom: 30px;
         }
 
         .temperature {
-            font-size: 3rem;
+            font-size: 4rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
         }
 
-        .weather-details {
-            grid-template-columns: 1fr;
-            gap: 15px;
+        .unit {
+            font-size: 2rem;
+            color: #999;
         }
-    }
-</style>
+
+        #description {
+            font-size: 1.5rem;
+            color: #666;
+            text-transform: capitalize;
+        }
+
+        /* Weather Details Grid */
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-item .label {
+            font-size: 0.9rem;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .detail-item span:last-child {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Loading, Error, Hidden States */
+        .loading {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #667eea;
+            padding: 20px;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive Design for Mobile */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .temperature {
+                font-size: 3rem;
+            }
+
+            .weather-details {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -263,160 +263,159 @@
     </div>
 
     <script>
-    // ========================================
-    // CONFIGURATION
-    // ========================================
-    
-    // API endpoint - will point to our Vercel function
-    // When running locally, this would be http://localhost:3000/api/weather
-    // When deployed, Vercel automatically uses the correct URL
-    const API_URL = '/api/weather';
-
-    // ========================================
-    // GET REFERENCES TO HTML ELEMENTS
-    // ========================================
-    
-    // These variables "grab" elements from our HTML so we can control them
-    const cityInput = document.getElementById('cityInput');
-    const searchBtn = document.getElementById('searchBtn');
-    const weatherDisplay = document.getElementById('weatherDisplay');
-    const errorMessage = document.getElementById('errorMessage');
-    const loading = document.getElementById('loading');
-    
-    // Elements inside the weather display
-    const cityName = document.getElementById('cityName');
-    const temp = document.getElementById('temp');
-    const description = document.getElementById('description');
-    const feelsLike = document.getElementById('feelsLike');
-    const humidity = document.getElementById('humidity');
-    const windSpeed = document.getElementById('windSpeed');
-
-    // ========================================
-    // EVENT LISTENERS
-    // ========================================
-    
-    // When the search button is clicked, run the searchWeather function
-    searchBtn.addEventListener('click', searchWeather);
-    
-    // When Enter key is pressed in the input, also search
-    cityInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            searchWeather();
-        }
-    });
-
-    // ========================================
-    // MAIN FUNCTION: SEARCH WEATHER
-    // ========================================
-    
-    async function searchWeather() {
-        // Get the city name from the input field
-        const city = cityInput.value.trim();
+        // ========================================
+        // CONFIGURATION
+        // ========================================
         
-        // Validation: Check if user entered a city
-        if (city === '') {
-            showError('Please enter a city name');
-            return;
-        }
+        // API endpoint - points to our secure Vercel function
+        const API_URL = '/api/weather';
+
+        // ========================================
+        // GET REFERENCES TO HTML ELEMENTS
+        // ========================================
         
-        // Show loading, hide other sections
-        showLoading();
+        const cityInput = document.getElementById('cityInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const weatherDisplay = document.getElementById('weatherDisplay');
+        const errorMessage = document.getElementById('errorMessage');
+        const loading = document.getElementById('loading');
         
-        try {
-            // Make API call to get weather data
-            const weatherData = await fetchWeatherData(city);
+        // Elements inside the weather display
+        const cityName = document.getElementById('cityName');
+        const temp = document.getElementById('temp');
+        const description = document.getElementById('description');
+        const feelsLike = document.getElementById('feelsLike');
+        const humidity = document.getElementById('humidity');
+        const windSpeed = document.getElementById('windSpeed');
+
+        // ========================================
+        // EVENT LISTENERS
+        // ========================================
+        
+        // When the search button is clicked, run the searchWeather function
+        searchBtn.addEventListener('click', searchWeather);
+        
+        // When Enter key is pressed in the input, also search
+        cityInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                searchWeather();
+            }
+        });
+
+        // ========================================
+        // MAIN FUNCTION: SEARCH WEATHER
+        // ========================================
+        
+        async function searchWeather() {
+            // Get the city name from the input field
+            const city = cityInput.value.trim();
             
-            // Display the weather data
-            displayWeather(weatherData);
+            // Validation: Check if user entered a city
+            if (city === '') {
+                showError('Please enter a city name');
+                return;
+            }
             
-        } catch (error) {
-            // If something goes wrong, show error message
-            showError(error.message);
+            // Show loading, hide other sections
+            showLoading();
+            
+            try {
+                // Make API call to get weather data
+                const weatherData = await fetchWeatherData(city);
+                
+                // Display the weather data
+                displayWeather(weatherData);
+                
+            } catch (error) {
+                // If something goes wrong, show error message
+                showError(error.message);
+            }
         }
-    }
 
-    // ========================================
-    // FETCH WEATHER DATA FROM API
-    // ========================================
-    
-    async function fetchWeatherData(city) {
-    // Call our Vercel function instead of OpenWeatherMap directly
-    const url = `${API_URL}?city=${city}`;
-    
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-        // Try to get error message from response
-        const errorData = await response.json().catch(() => ({}));
+        // ========================================
+        // FETCH WEATHER DATA FROM API
+        // ========================================
         
-        if (response.status === 404) {
-            throw new Error('City not found. Please check spelling and try again.');
-        } else if (response.status === 401) {
-            throw new Error('API key invalid. Please check your API key.');
-        } else if (errorData.error) {
-            throw new Error(errorData.error);
-        } else {
-            throw new Error('Unable to fetch weather data. Please try again later.');
+        async function fetchWeatherData(city) {
+            // Call our Vercel function instead of OpenWeatherMap directly
+            const url = `${API_URL}?city=${encodeURIComponent(city)}`;
+            
+            // Make the HTTP request
+            const response = await fetch(url);
+            
+            // Check if the request was successful
+            if (!response.ok) {
+                // Try to get error message from response
+                let errorData;
+                try {
+                    errorData = await response.json();
+                } catch (e) {
+                    errorData = {};
+                }
+                
+                // Handle different error types
+                if (response.status === 404) {
+                    throw new Error('City not found. Please check spelling and try again.');
+                } else if (response.status === 401) {
+                    throw new Error('API key invalid. Please check your API key.');
+                } else if (errorData.error) {
+                    throw new Error(errorData.error);
+                } else {
+                    throw new Error('Unable to fetch weather data. Please try again later.');
+                }
+            }
+            
+            // Convert response to JSON (JavaScript Object)
+            const data = await response.json();
+            
+            return data;
         }
-    }
-    
-    const data = await response.json();
-    return data;
-}
-        
-        // Convert response to JSON (JavaScript Object)
-        const data = await response.json();
-        
-        return data;
-    }
 
-    // ========================================
-    // DISPLAY WEATHER DATA ON PAGE
-    // ========================================
-    
-    function displayWeather(data) {
-        // Extract data from the API response
-        const cityNameText = `${data.name}, ${data.sys.country}`;
-        const temperature = Math.round(data.main.temp);
-        const feelsLikeTemp = Math.round(data.main.feels_like);
-        const weatherDescription = data.weather[0].description;
-        const humidityValue = `${data.main.humidity}%`;
-        const windSpeedValue = `${Math.round(data.wind.speed)} m/s`;
+        // ========================================
+        // DISPLAY WEATHER DATA ON PAGE
+        // ========================================
         
-        // Update the HTML elements with the data
-        cityName.textContent = cityNameText;
-        temp.textContent = temperature;
-        description.textContent = weatherDescription;
-        feelsLike.textContent = `${feelsLikeTemp}°C`;
-        humidity.textContent = humidityValue;
-        windSpeed.textContent = windSpeedValue;
-        
-        // Hide loading and error, show weather display
-        loading.classList.add('hidden');
-        errorMessage.classList.add('hidden');
-        weatherDisplay.classList.remove('hidden');
-    }
+        function displayWeather(data) {
+            // Extract data from the API response
+            const cityNameText = `${data.name}, ${data.sys.country}`;
+            const temperature = Math.round(data.main.temp);
+            const feelsLikeTemp = Math.round(data.main.feels_like);
+            const weatherDescription = data.weather[0].description;
+            const humidityValue = `${data.main.humidity}%`;
+            const windSpeedValue = `${Math.round(data.wind.speed)} m/s`;
+            
+            // Update the HTML elements with the data
+            cityName.textContent = cityNameText;
+            temp.textContent = temperature;
+            description.textContent = weatherDescription;
+            feelsLike.textContent = `${feelsLikeTemp}°C`;
+            humidity.textContent = humidityValue;
+            windSpeed.textContent = windSpeedValue;
+            
+            // Hide loading and error, show weather display
+            loading.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            weatherDisplay.classList.remove('hidden');
+        }
 
-    // ========================================
-    // UTILITY FUNCTIONS
-    // ========================================
-    
-    // Show loading indicator
-    function showLoading() {
-        loading.classList.remove('hidden');
-        weatherDisplay.classList.add('hidden');
-        errorMessage.classList.add('hidden');
-    }
-    
-    // Show error message
-    function showError(message) {
-        errorMessage.textContent = message;
-        errorMessage.classList.remove('hidden');
-        loading.classList.add('hidden');
-        weatherDisplay.classList.add('hidden');
-    }
-</script>
+        // ========================================
+        // UTILITY FUNCTIONS
+        // ========================================
+        
+        // Show loading indicator
+        function showLoading() {
+            loading.classList.remove('hidden');
+            weatherDisplay.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+        }
+        
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+            loading.classList.add('hidden');
+            weatherDisplay.classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
-```
-
