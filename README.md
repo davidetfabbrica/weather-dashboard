@@ -33,6 +33,7 @@ A clean, responsive web application that displays real-time weather information 
 - **Loading States**: Visual feedback while fetching data
 - **Smooth Animations**: Elegant fade-in effects for weather display
 - **Keyboard Support**: Press Enter to search (no need to click the button)
+- **Dark and Light modes**: Click moon/sun icon to toggle between modes
 
 ## Security Features
 - API key stored securely as environment variable on Vercel
