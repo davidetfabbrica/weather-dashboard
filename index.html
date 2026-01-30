@@ -267,9 +267,10 @@
     // CONFIGURATION
     // ========================================
     
-    // Your API key from OpenWeatherMap
-    const API_KEY = 'eabd9149c716846835b6b2d2b7a44359';  // REPLACE THIS!
-    const API_URL = 'https://api.openweathermap.org/data/2.5/weather';
+    // API endpoint - will point to our Vercel function
+    // When running locally, this would be http://localhost:3000/api/weather
+    // When deployed, Vercel automatically uses the correct URL
+    const API_URL = '/api/weather';
 
     // ========================================
     // GET REFERENCES TO HTML ELEMENTS
@@ -339,23 +340,29 @@
     // ========================================
     
     async function fetchWeatherData(city) {
-        // Build the complete API URL with city and API key
-        const url = `${API_URL}?q=${city}&appid=${API_KEY}&units=metric`;
+    // Call our Vercel function instead of OpenWeatherMap directly
+    const url = `${API_URL}?city=${city}`;
+    
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+        // Try to get error message from response
+        const errorData = await response.json().catch(() => ({}));
         
-        // Make the HTTP request
-        const response = await fetch(url);
-        
-        // Check if the request was successful
-        if (!response.ok) {
-            // If city not found or other error
-            if (response.status === 404) {
-                throw new Error('City not found. Please check spelling and try again.');
-            } else if (response.status === 401) {
-                throw new Error('API key invalid. Please check your API key.');
-            } else {
-                throw new Error('Unable to fetch weather data. Please try again later.');
-            }
+        if (response.status === 404) {
+            throw new Error('City not found. Please check spelling and try again.');
+        } else if (response.status === 401) {
+            throw new Error('API key invalid. Please check your API key.');
+        } else if (errorData.error) {
+            throw new Error(errorData.error);
+        } else {
+            throw new Error('Unable to fetch weather data. Please try again later.');
         }
+    }
+    
+    const data = await response.json();
+    return data;
+}
         
         // Convert response to JSON (JavaScript Object)
         const data = await response.json();
