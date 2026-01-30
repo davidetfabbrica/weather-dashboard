@@ -5,6 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Dashboard</title>
     <style>
+        /* ========================================
+           CSS VARIABLES FOR THEMING
+           ======================================== */
+        
+        :root {
+            /* Light Mode Colors (Default) */
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --card-bg: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-tertiary: #999999;
+            --input-border: #dddddd;
+            --input-focus: #667eea;
+            --detail-bg: #f8f9fa;
+            --error-bg: #ffeeee;
+            --error-text: #cc3333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Dark Mode Colors */
+        [data-theme="dark"] {
+            --bg-gradient-start: #1a1a2e;
+            --bg-gradient-end: #16213e;
+            --card-bg: #0f3460;
+            --text-primary: #e9ecef;
+            --text-secondary: #adb5bd;
+            --text-tertiary: #6c757d;
+            --input-border: #495057;
+            --input-focus: #7b68ee;
+            --detail-bg: #1a1a2e;
+            --error-bg: #4a1919;
+            --error-text: #ff6b6b;
+            --shadow: rgba(0, 0, 0, 0.6);
+        }
+
         /* Reset and Base Styles */
         * {
             margin: 0;
@@ -14,39 +50,65 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            transition: background 0.3s ease;
         }
 
         /* Main Container */
         .container {
-            background: white;
+            background: var(--card-bg);
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px var(--shadow);
             max-width: 500px;
             width: 100%;
             padding: 40px;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
 
         /* Header Styles */
         header {
             text-align: center;
             margin-bottom: 30px;
+            position: relative;
         }
 
         header h1 {
             font-size: 2.5rem;
-            color: #333;
+            color: var(--text-primary);
             margin-bottom: 10px;
+            transition: color 0.3s ease;
         }
 
         header p {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            cursor: pointer;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            padding: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
         }
 
         /* Search Box */
@@ -60,14 +122,20 @@
             flex: 1;
             padding: 15px;
             font-size: 1rem;
-            border: 2px solid #ddd;
+            border: 2px solid var(--input-border);
             border-radius: 10px;
             outline: none;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, background 0.3s, color 0.3s;
+            background: var(--card-bg);
+            color: var(--text-primary);
         }
 
         #cityInput:focus {
-            border-color: #667eea;
+            border-color: var(--input-focus);
+        }
+
+        #cityInput::placeholder {
+            color: var(--text-tertiary);
         }
 
         #searchBtn {
@@ -110,8 +178,9 @@
 
         #cityName {
             font-size: 2rem;
-            color: #333;
+            color: var(--text-primary);
             margin-bottom: 20px;
+            transition: color 0.3s ease;
         }
 
         .weather-main {
@@ -123,17 +192,24 @@
             font-weight: bold;
             color: #667eea;
             margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        [data-theme="dark"] .temperature {
+            color: #7b68ee;
         }
 
         .unit {
             font-size: 2rem;
-            color: #999;
+            color: var(--text-tertiary);
+            transition: color 0.3s ease;
         }
 
         #description {
             font-size: 1.5rem;
-            color: #666;
+            color: var(--text-secondary);
             text-transform: capitalize;
+            transition: color 0.3s ease;
         }
 
         /* Weather Details Grid */
@@ -141,9 +217,10 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
-            background: #f8f9fa;
+            background: var(--detail-bg);
             padding: 20px;
             border-radius: 10px;
+            transition: background 0.3s ease;
         }
 
         .detail-item {
@@ -154,14 +231,16 @@
 
         .detail-item .label {
             font-size: 0.9rem;
-            color: #999;
+            color: var(--text-tertiary);
             text-transform: uppercase;
+            transition: color 0.3s ease;
         }
 
         .detail-item span:last-child {
             font-size: 1.2rem;
             font-weight: bold;
-            color: #333;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
         }
 
         /* Loading, Error, Hidden States */
@@ -170,15 +249,21 @@
             font-size: 1.2rem;
             color: #667eea;
             padding: 20px;
+            transition: color 0.3s ease;
+        }
+
+        [data-theme="dark"] .loading {
+            color: #7b68ee;
         }
 
         .error-message {
-            background: #fee;
-            color: #c33;
+            background: var(--error-bg);
+            color: var(--error-text);
             padding: 15px;
             border-radius: 10px;
             text-align: center;
             margin-top: 20px;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .hidden {
@@ -203,6 +288,12 @@
                 grid-template-columns: 1fr;
                 gap: 15px;
             }
+
+            .theme-toggle {
+                position: static;
+                display: block;
+                margin: 10px auto 0;
+            }
         }
     </style>
 </head>
@@ -210,6 +301,9 @@
     <div class="container">
         <!-- Header Section -->
         <header>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                🌙
+            </button>
             <h1>🌤️ Weather Dashboard</h1>
             <p>Get current weather for any city</p>
         </header>
@@ -288,6 +382,10 @@
         const humidity = document.getElementById('humidity');
         const windSpeed = document.getElementById('windSpeed');
 
+        // Dark mode elements
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
         // ========================================
         // EVENT LISTENERS
         // ========================================
@@ -299,6 +397,39 @@
         cityInput.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
                 searchWeather();
+            }
+        });
+
+        // ========================================
+        // DARK MODE FUNCTIONALITY
+        // ========================================
+        
+        // Check for saved theme preference or default to 'light'
+        const savedTheme = localStorage.getItem('theme') || 'light';
+
+        // Apply the saved theme on page load
+        if (savedTheme === 'dark') {
+            html.setAttribute('data-theme', 'dark');
+            themeToggle.textContent = '☀️';
+        } else {
+            html.setAttribute('data-theme', 'light');
+            themeToggle.textContent = '🌙';
+        }
+
+        // Toggle theme when button is clicked
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'light') {
+                // Switch to dark mode
+                html.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                // Switch to light mode
+                html.setAttribute('data-theme', 'light');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
             }
         });
 
