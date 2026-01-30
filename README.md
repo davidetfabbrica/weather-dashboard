@@ -34,6 +34,11 @@ A clean, responsive web application that displays real-time weather information 
 - **Smooth Animations**: Elegant fade-in effects for weather display
 - **Keyboard Support**: Press Enter to search (no need to click the button)
 
+## Security Features
+- API key stored securely as environment variable on Vercel
+- Backend serverless function proxies weather requests
+- No sensitive credentials exposed to client
+
 ## 🎬 Demo
 
 ### How It Works
