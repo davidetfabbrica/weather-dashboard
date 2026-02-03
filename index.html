@@ -111,6 +111,67 @@
             transform: scale(0.95);
         }
 
+        /* Favorites Section */
+        .favorites-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: var(--detail-bg);
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .favorites-section h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .favorites-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .favorite-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: var(--card-bg);
+            border: 2px solid var(--input-border);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .favorite-item:hover {
+            border-color: var(--input-focus);
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .favorite-item .city-name {
+            font-weight: 500;
+        }
+
+        .favorite-item .remove-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            line-height: 1;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .favorite-item .remove-btn:hover {
+            opacity: 1;
+        }
+
         /* Search Box */
         .search-box {
             display: flex;
@@ -179,8 +240,41 @@
         #cityName {
             font-size: 2rem;
             color: var(--text-primary);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             transition: color 0.3s ease;
+        }
+
+        /* Add to Favorites Button */
+        .favorite-btn {
+            margin: 0 auto 20px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #333;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
+        }
+
+        .favorite-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        }
+
+        .favorite-btn:active {
+            transform: translateY(0);
+        }
+
+        .favorite-btn.added {
+            background: linear-gradient(135deg, #90ee90 0%, #98fb98 100%);
+            cursor: default;
+        }
+
+        .favorite-btn.added::before {
+            content: '✓ ';
         }
 
         .weather-main {
@@ -294,22 +388,31 @@
                 display: block;
                 margin: 10px auto 0;
             }
+
+            .favorites-list {
+                flex-direction: column;
+            }
+            
+            .favorite-item {
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header Section -->
         <header>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-                🌙
-            </button>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
             <h1>🌤️ Weather Dashboard</h1>
             <p>Get current weather for any city</p>
         </header>
 
-        <!-- Search Section -->
         <main>
+            <div id="favoritesSection" class="favorites-section hidden">
+                <h3>⭐ Favorite Cities</h3>
+                <div id="favoritesList" class="favorites-list"></div>
+            </div>
+
             <div class="search-box">
                 <input 
                     type="text" 
@@ -320,9 +423,9 @@
                 <button id="searchBtn">Search</button>
             </div>
 
-            <!-- Weather Display Section (hidden initially) -->
             <div id="weatherDisplay" class="weather-display hidden">
                 <h2 id="cityName"></h2>
+                <button id="addFavoriteBtn" class="favorite-btn">⭐ Add to Favorites</button>
                 
                 <div class="weather-main">
                     <div class="temperature">
@@ -348,33 +451,22 @@
                 </div>
             </div>
 
-            <!-- Error Message (hidden initially) -->
             <div id="errorMessage" class="error-message hidden"></div>
-
-            <!-- Loading Indicator (hidden initially) -->
             <div id="loading" class="loading hidden">Loading...</div>
         </main>
     </div>
 
     <script>
-        // ========================================
-        // CONFIGURATION
-        // ========================================
-        
-        // API endpoint - points to our secure Vercel function
+        // Configuration
         const API_URL = '/api/weather';
 
-        // ========================================
-        // GET REFERENCES TO HTML ELEMENTS
-        // ========================================
-        
+        // Get references to HTML elements
         const cityInput = document.getElementById('cityInput');
         const searchBtn = document.getElementById('searchBtn');
         const weatherDisplay = document.getElementById('weatherDisplay');
         const errorMessage = document.getElementById('errorMessage');
         const loading = document.getElementById('loading');
         
-        // Elements inside the weather display
         const cityName = document.getElementById('cityName');
         const temp = document.getElementById('temp');
         const description = document.getElementById('description');
@@ -382,32 +474,27 @@
         const humidity = document.getElementById('humidity');
         const windSpeed = document.getElementById('windSpeed');
 
-        // Dark mode elements
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
 
-        // ========================================
-        // EVENT LISTENERS
-        // ========================================
-        
-        // When the search button is clicked, run the searchWeather function
+        const favoritesSection = document.getElementById('favoritesSection');
+        const favoritesList = document.getElementById('favoritesList');
+        const addFavoriteBtn = document.getElementById('addFavoriteBtn');
+
+        let favorites = [];
+        let currentCity = null;
+        const MAX_FAVORITES = 5;
+
+        // Event Listeners
         searchBtn.addEventListener('click', searchWeather);
-        
-        // When Enter key is pressed in the input, also search
         cityInput.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
                 searchWeather();
             }
         });
 
-        // ========================================
-        // DARK MODE FUNCTIONALITY
-        // ========================================
-        
-        // Check for saved theme preference or default to 'light'
+        // Dark Mode
         const savedTheme = localStorage.getItem('theme') || 'light';
-
-        // Apply the saved theme on page load
         if (savedTheme === 'dark') {
             html.setAttribute('data-theme', 'dark');
             themeToggle.textContent = '☀️';
@@ -416,67 +503,44 @@
             themeToggle.textContent = '🌙';
         }
 
-        // Toggle theme when button is clicked
         themeToggle.addEventListener('click', () => {
             const currentTheme = html.getAttribute('data-theme');
-            
             if (currentTheme === 'light') {
-                // Switch to dark mode
                 html.setAttribute('data-theme', 'dark');
                 themeToggle.textContent = '☀️';
                 localStorage.setItem('theme', 'dark');
             } else {
-                // Switch to light mode
                 html.setAttribute('data-theme', 'light');
                 themeToggle.textContent = '🌙';
                 localStorage.setItem('theme', 'light');
             }
         });
 
-        // ========================================
-        // MAIN FUNCTION: SEARCH WEATHER
-        // ========================================
-        
+        // Main search function
         async function searchWeather() {
-            // Get the city name from the input field
             const city = cityInput.value.trim();
             
-            // Validation: Check if user entered a city
             if (city === '') {
                 showError('Please enter a city name');
                 return;
             }
             
-            // Show loading, hide other sections
             showLoading();
             
             try {
-                // Make API call to get weather data
                 const weatherData = await fetchWeatherData(city);
-                
-                // Display the weather data
                 displayWeather(weatherData);
-                
             } catch (error) {
-                // If something goes wrong, show error message
                 showError(error.message);
             }
         }
 
-        // ========================================
-        // FETCH WEATHER DATA FROM API
-        // ========================================
-        
+        // Fetch weather data
         async function fetchWeatherData(city) {
-            // Call our Vercel function instead of OpenWeatherMap directly
             const url = `${API_URL}?city=${encodeURIComponent(city)}`;
-            
-            // Make the HTTP request
             const response = await fetch(url);
             
-            // Check if the request was successful
             if (!response.ok) {
-                // Try to get error message from response
                 let errorData;
                 try {
                     errorData = await response.json();
@@ -484,7 +548,6 @@
                     errorData = {};
                 }
                 
-                // Handle different error types
                 if (response.status === 404) {
                     throw new Error('City not found. Please check spelling and try again.');
                 } else if (response.status === 401) {
@@ -496,18 +559,12 @@
                 }
             }
             
-            // Convert response to JSON (JavaScript Object)
             const data = await response.json();
-            
             return data;
         }
 
-        // ========================================
-        // DISPLAY WEATHER DATA ON PAGE
-        // ========================================
-        
+        // Display weather
         function displayWeather(data) {
-            // Extract data from the API response
             const cityNameText = `${data.name}, ${data.sys.country}`;
             const temperature = Math.round(data.main.temp);
             const feelsLikeTemp = Math.round(data.main.feels_like);
@@ -515,7 +572,6 @@
             const humidityValue = `${data.main.humidity}%`;
             const windSpeedValue = `${Math.round(data.wind.speed)} m/s`;
             
-            // Update the HTML elements with the data
             cityName.textContent = cityNameText;
             temp.textContent = temperature;
             description.textContent = weatherDescription;
@@ -523,30 +579,122 @@
             humidity.textContent = humidityValue;
             windSpeed.textContent = windSpeedValue;
             
-            // Hide loading and error, show weather display
             loading.classList.add('hidden');
             errorMessage.classList.add('hidden');
             weatherDisplay.classList.remove('hidden');
+            
+            currentCity = data.name;
+            
+            if (favorites.includes(currentCity)) {
+                updateAddButton('already');
+            } else {
+                updateAddButton('default');
+            }
         }
 
-        // ========================================
-        // UTILITY FUNCTIONS
-        // ========================================
-        
-        // Show loading indicator
+        // Utility functions
         function showLoading() {
             loading.classList.remove('hidden');
             weatherDisplay.classList.add('hidden');
             errorMessage.classList.add('hidden');
         }
         
-        // Show error message
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.classList.remove('hidden');
             loading.classList.add('hidden');
             weatherDisplay.classList.add('hidden');
         }
+
+        // Favorites functions
+        function loadFavorites() {
+            const saved = localStorage.getItem('favoriteCities');
+            if (saved) {
+                favorites = JSON.parse(saved);
+                renderFavorites();
+            }
+        }
+
+        function saveFavorites() {
+            localStorage.setItem('favoriteCities', JSON.stringify(favorites));
+        }
+
+        function renderFavorites() {
+            if (favorites.length === 0) {
+                favoritesSection.classList.add('hidden');
+                return;
+            }
+            
+            favoritesSection.classList.remove('hidden');
+            favoritesList.innerHTML = '';
+            
+            favorites.forEach(city => {
+                const favoriteItem = document.createElement('div');
+                favoriteItem.className = 'favorite-item';
+                favoriteItem.innerHTML = `
+                    <span class="city-name">${city}</span>
+                    <button class="remove-btn" data-city="${city}">×</button>
+                `;
+                
+                favoriteItem.querySelector('.city-name').addEventListener('click', () => {
+                    cityInput.value = city;
+                    searchWeather();
+                });
+                
+                favoriteItem.querySelector('.remove-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    removeFavorite(city);
+                });
+                
+                favoritesList.appendChild(favoriteItem);
+            });
+        }
+
+        function addToFavorites() {
+            if (!currentCity) return;
+            
+            if (favorites.includes(currentCity)) {
+                updateAddButton('already');
+                return;
+            }
+            
+            if (favorites.length >= MAX_FAVORITES) {
+                showError(`Maximum ${MAX_FAVORITES} favorite cities allowed. Remove one to add another.`);
+                return;
+            }
+            
+            favorites.push(currentCity);
+            saveFavorites();
+            renderFavorites();
+            updateAddButton('added');
+        }
+
+        function removeFavorite(city) {
+            favorites = favorites.filter(fav => fav !== city);
+            saveFavorites();
+            renderFavorites();
+            
+            if (currentCity === city) {
+                updateAddButton('default');
+            }
+        }
+
+        function updateAddButton(state) {
+            if (state === 'added' || state === 'already') {
+                addFavoriteBtn.textContent = '✓ Added to Favorites';
+                addFavoriteBtn.classList.add('added');
+                addFavoriteBtn.disabled = true;
+            } else {
+                addFavoriteBtn.textContent = '⭐ Add to Favorites';
+                addFavoriteBtn.classList.remove('added');
+                addFavoriteBtn.disabled = false;
+            }
+        }
+
+        addFavoriteBtn.addEventListener('click', addToFavorites);
+
+        // Initialize
+        loadFavorites();
     </script>
 </body>
 </html>
