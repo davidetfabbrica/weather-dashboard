@@ -55,9 +55,9 @@ A modern, feature-rich weather application built with vanilla JavaScript, featur
 - Optimized for readability in both themes
 - Reduced eye strain for night-time usage
 
-### ⭐ Favorite Cities
-- **Save up to 5 favorite cities** for quick access
-- One-click weather loading from favorites
+### ⭐ Favourite Cities
+- **Save up to 5 favourite cities** for quick access
+- One-click weather loading from favourites
 - Add/remove cities with intuitive UI
 - Persistent storage across sessions
 - Visual feedback on favorite status
@@ -86,8 +86,8 @@ A modern, feature-rich weather application built with vanilla JavaScript, featur
 ![Light Mode](screenshots/light-mode.png)
 *Clean, modern weather display with intuitive interface*
 
-### Favorite Cities
-![Favorites](screenshots/favourites.png)
+### Favourite Cities
+![Favourites](screenshots/favourites.png)
 *Save up to 5 cities for quick access - persistent across sessions*
 
 ### 5-Day Forecast
