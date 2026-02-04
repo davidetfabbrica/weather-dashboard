@@ -8,7 +8,7 @@ A modern, feature-rich weather application built with vanilla JavaScript, featur
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=flat&logo=javascript&logoColor=%23F7DF1E)
 ![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=flat&logo=vercel&logoColor=white)
 
-**Live Demo:** [https://weather-dashboard.vercel.app](https://weather-dashboard.vercel.app) *(replace with your actual URL)*
+**Live Demo:** [https://weather-dashboard-five-rust.vercel.app/](https://weather-dashboard-five-rust.vercel.app/) 
 
 ---
 
@@ -570,9 +570,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact & Links
 
-**Developer:** Davide T Fabbrica  
+**Developer:** DavideT Fabbrica  
 **Project Repository:** [https://github.com/davidetfabbrica/weather-dashboard](https://github.com/davidetfabbrica/weather-dashboard)  
-**Live Demo:** *[Your Vercel URL here]*  
+**Live Demo:** [[Your Vercel URL here](https://weather-dashboard-five-rust.vercel.app/)](https://weather-dashboard-five-rust.vercel.app/)  
 **Project Roadmap:** [GitHub Projects](https://github.com/users/davidetfabbrica/projects/2)
 
 ---
@@ -583,6 +583,6 @@ If you found this project helpful or interesting, please consider giving it a �
 
 ---
 
-**Built with ❤️ by a beginner developer learning full-stack web development**
+**Built as part of a suite of ongoing Claude Code experimentation projects**
 
 *Last updated: February 2026*
