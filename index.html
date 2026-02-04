@@ -103,8 +103,8 @@
             transform: scale(0.95);
         }
 
-        /* FAVORITES */
-        .favorites-section {
+        /* FAVOURITES */
+        .favourites-section {
             margin-bottom: 20px;
             padding: 20px;
             background: var(--detail-bg);
@@ -112,20 +112,20 @@
             transition: background 0.3s ease;
         }
 
-        .favorites-section h3 {
+        .favourites-section h3 {
             color: var(--text-primary);
             font-size: 1.2rem;
             margin-bottom: 15px;
             transition: color 0.3s ease;
         }
 
-        .favorites-list {
+        .favourites-list {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
 
-        .favorite-item {
+        .favourite-item {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -139,17 +139,17 @@
             font-size: 0.9rem;
         }
 
-        .favorite-item:hover {
+        .favourite-item:hover {
             border-color: var(--input-focus);
             transform: translateY(-2px);
             box-shadow: 0 3px 10px rgba(102, 126, 234, 0.2);
         }
 
-        .favorite-item .city-name {
+        .favourite-item .city-name {
             font-weight: 500;
         }
 
-        .favorite-item .remove-btn {
+        .favourite-item .remove-btn {
             background: none;
             border: none;
             cursor: pointer;
@@ -160,7 +160,7 @@
             transition: opacity 0.2s;
         }
 
-        .favorite-item .remove-btn:hover {
+        .favourite-item .remove-btn:hover {
             opacity: 1;
         }
 
@@ -270,7 +270,7 @@
             transition: color 0.3s ease;
         }
 
-        .favorite-btn {
+        .favourite-btn {
             margin: 0 auto 20px;
             padding: 10px 20px;
             font-size: 0.9rem;
@@ -284,21 +284,21 @@
             display: block;
         }
 
-        .favorite-btn:hover {
+        .favourite-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
         }
 
-        .favorite-btn:active {
+        .favourite-btn:active {
             transform: translateY(0);
         }
 
-        .favorite-btn.added {
+        .favourite-btn.added {
             background: linear-gradient(135deg, #90ee90 0%, #98fb98 100%);
             cursor: default;
         }
 
-        .favorite-btn.added::before {
+        .favourite-btn.added::before {
             content: '✓ ';
         }
 
@@ -492,11 +492,11 @@
                 margin: 10px auto 0;
             }
 
-            .favorites-list {
+            .favourites-list {
                 flex-direction: column;
             }
             
-            .favorite-item {
+            .favourite-item {
                 justify-content: space-between;
             }
 
@@ -523,9 +523,9 @@
         </header>
 
         <main>
-            <div id="favoritesSection" class="favorites-section hidden">
-                <h3>⭐ Favorite Cities</h3>
-                <div id="favoritesList" class="favorites-list"></div>
+            <div id="favouritesSection" class="favourites-section hidden">
+                <h3>⭐ Favourite Cities</h3>
+                <div id="favouritesList" class="favourites-list"></div>
             </div>
 
             <div class="search-box">
@@ -545,7 +545,7 @@
 
             <div id="weatherDisplay" class="weather-display hidden">
                 <h2 id="cityName"></h2>
-                <button id="addFavoriteBtn" class="favorite-btn">⭐ Add to Favorites</button>
+                <button id="addFavouriteBtn" class="favourite-btn">⭐ Add to Favourites</button>
                 
                 <div class="weather-main">
                     <div class="temperature">
@@ -601,9 +601,9 @@
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
 
-        const favoritesSection = document.getElementById('favoritesSection');
-        const favoritesList = document.getElementById('favoritesList');
-        const addFavoriteBtn = document.getElementById('addFavoriteBtn');
+        const favouritesSection = document.getElementById('favouritesSection');
+        const favouritesList = document.getElementById('favouritesList');
+        const addFavouriteBtn = document.getElementById('addFavouriteBtn');
 
         const viewToggle = document.getElementById('viewToggle');
         const currentBtn = document.getElementById('currentBtn');
@@ -612,11 +612,11 @@
         const forecastCityName = document.getElementById('forecastCityName');
         const forecastCards = document.getElementById('forecastCards');
 
-        let favorites = [];
+        let favourites = [];
         let currentCity = null;
         let currentView = 'current';
         let lastSearchedCity = null;
-        const MAX_FAVORITES = 5;
+        const MAX_FAVOURITES = 5;
 
         const weatherIcons = {
             'Clear': '☀️',
@@ -732,7 +732,7 @@
             currentCity = data.name;
             lastSearchedCity = data.name;
             
-            if (favorites.includes(currentCity)) {
+            if (favourites.includes(currentCity)) {
                 updateAddButton('already');
             } else {
                 updateAddButton('default');
@@ -758,73 +758,73 @@
             forecastDisplay.classList.add('hidden');
         }
 
-        // FAVORITES
-        function loadFavorites() {
-            const saved = localStorage.getItem('favoriteCities');
+        // FAVOURITES
+        function loadFavourites() {
+            const saved = localStorage.getItem('favouriteCities');
             if (saved) {
-                favorites = JSON.parse(saved);
-                renderFavorites();
+                favourites = JSON.parse(saved);
+                renderFavourites();
             }
         }
 
-        function saveFavorites() {
-            localStorage.setItem('favoriteCities', JSON.stringify(favorites));
+        function saveFavourites() {
+            localStorage.setItem('favouriteCities', JSON.stringify(favourites));
         }
 
-        function renderFavorites() {
-            if (favorites.length === 0) {
-                favoritesSection.classList.add('hidden');
+        function renderFavourites() {
+            if (favourites.length === 0) {
+                favouritesSection.classList.add('hidden');
                 return;
             }
             
-            favoritesSection.classList.remove('hidden');
-            favoritesList.innerHTML = '';
+            favouuritesSection.classList.remove('hidden');
+            favouritesList.innerHTML = '';
             
-            favorites.forEach(city => {
-                const favoriteItem = document.createElement('div');
-                favoriteItem.className = 'favorite-item';
-                favoriteItem.innerHTML = `
+            favourites.forEach(city => {
+                const favouriteItem = document.createElement('div');
+                favouriteItem.className = 'favourite-item';
+                favouriteItem.innerHTML = `
                     <span class="city-name">${city}</span>
                     <button class="remove-btn" data-city="${city}">×</button>
                 `;
                 
-                favoriteItem.querySelector('.city-name').addEventListener('click', () => {
+                favouriteItem.querySelector('.city-name').addEventListener('click', () => {
                     cityInput.value = city;
                     searchWeather();
                 });
                 
-                favoriteItem.querySelector('.remove-btn').addEventListener('click', (e) => {
+                favouriteItem.querySelector('.remove-btn').addEventListener('click', (e) => {
                     e.stopPropagation();
-                    removeFavorite(city);
+                    removeFavourite(city);
                 });
                 
-                favoritesList.appendChild(favoriteItem);
+                favouritesList.appendChild(favouriteItem);
             });
         }
 
-        function addToFavorites() {
+        function addToFavourites() {
             if (!currentCity) return;
             
-            if (favorites.includes(currentCity)) {
+            if (favourites.includes(currentCity)) {
                 updateAddButton('already');
                 return;
             }
             
-            if (favorites.length >= MAX_FAVORITES) {
-                showError(`Maximum ${MAX_FAVORITES} favorite cities allowed. Remove one to add another.`);
+            if (favourites.length >= MAX_FAVOURITES) {
+                showError(`Maximum ${MAX_FAVOURITES} favourite cities allowed. Remove one to add another.`);
                 return;
             }
             
-            favorites.push(currentCity);
-            saveFavorites();
-            renderFavorites();
+            favourites.push(currentCity);
+            saveFavourites();
+            renderFavourites();
             updateAddButton('added');
         }
 
-        function removeFavorite(city) {
-            favorites = favorites.filter(fav => fav !== city);
-            saveFavorites();
-            renderFavorites();
+        function removeFavourite(city) {
+            favourites = favourites.filter(fav => fav !== city);
+            saveFavourites();
+            renderFavourites();
             
             if (currentCity === city) {
                 updateAddButton('default');
@@ -833,17 +833,17 @@
 
         function updateAddButton(state) {
             if (state === 'added' || state === 'already') {
-                addFavoriteBtn.textContent = '✓ Added to Favorites';
-                addFavoriteBtn.classList.add('added');
-                addFavoriteBtn.disabled = true;
+                addFavouriteBtn.textContent = '✓ Added to Favourites';
+                addFavouriteBtn.classList.add('added');
+                addFavouriteBtn.disabled = true;
             } else {
-                addFavoriteBtn.textContent = '⭐ Add to Favorites';
-                addFavoriteBtn.classList.remove('added');
-                addFavoriteBtn.disabled = false;
+                addFavouriteBtn.textContent = '⭐ Add to Favourites';
+                addFavouriteBtn.classList.remove('added');
+                addFavouriteBtn.disabled = false;
             }
         }
 
-        addFavoriteBtn.addEventListener('click', addToFavorites);
+        addFavouriteBtn.addEventListener('click', addToFavourites);
 
         // FORECAST
         currentBtn.addEventListener('click', () => {
@@ -980,7 +980,7 @@
         }
 
         // INITIALIZE
-        loadFavorites();
+        loadFavourites();
     </script>
 </body>
 </html>
