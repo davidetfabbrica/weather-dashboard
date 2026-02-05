@@ -1,9 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Dashboard</title>
+    
+    <!-- Leaflet CSS for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
     <style>
         /* CSS VARIABLES FOR THEMING */
         :root {
@@ -57,7 +62,7 @@
             background: var(--card-bg);
             border-radius: 20px;
             box-shadow: 0 20px 60px var(--shadow);
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
             padding: 40px;
             transition: background 0.3s ease, box-shadow 0.3s ease;
@@ -74,6 +79,18 @@
             color: var(--text-primary);
             margin-bottom: 10px;
             transition: color 0.3s ease;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         header p {
@@ -95,7 +112,7 @@
         }
 
         .theme-toggle:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(15deg);
         }
 
         .theme-toggle:active {
@@ -109,13 +126,52 @@
             background: var(--detail-bg);
             border-radius: 10px;
             transition: background 0.3s ease;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .favourites-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
         }
 
         .favourites-section h3 {
             color: var(--text-primary);
             font-size: 1.2rem;
-            margin-bottom: 15px;
             transition: color 0.3s ease;
+        }
+
+        .clear-all-btn {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .clear-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        }
+
+        .clear-all-btn:active {
+            transform: translateY(0);
         }
 
         .favourites-list {
@@ -136,6 +192,21 @@
             transition: all 0.2s ease;
             color: var(--text-primary);
             font-size: 0.9rem;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            70% {
+                transform: scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .favourite-item:hover {
@@ -156,11 +227,12 @@
             padding: 0;
             line-height: 1;
             opacity: 0.6;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, transform 0.2s;
         }
 
         .favourite-item .remove-btn:hover {
             opacity: 1;
+            transform: rotate(90deg);
         }
 
         /* SEARCH */
@@ -177,13 +249,15 @@
             border: 2px solid var(--input-border);
             border-radius: 10px;
             outline: none;
-            transition: border-color 0.3s, background 0.3s, color 0.3s;
+            transition: border-color 0.3s, background 0.3s, color 0.3s, transform 0.2s;
             background: var(--card-bg);
             color: var(--text-primary);
         }
 
         #cityInput:focus {
             border-color: var(--input-focus);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
         }
 
         #cityInput::placeholder {
@@ -232,6 +306,23 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toggle-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .toggle-btn:hover::before {
+            left: 100%;
         }
 
         .toggle-btn:hover {
@@ -246,23 +337,26 @@
         }
 
         /* WEATHER DISPLAY */
-        .weather-display {
-            text-align: center;
-            animation: fadeIn 0.5s;
+        .weather-display, .forecast-display {
+            animation: fadeInScale 0.5s ease-out;
         }
 
-        @keyframes fadeIn {
+        @keyframes fadeInScale {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1);
             }
         }
 
-        #cityName {
+        .weather-display {
+            text-align: center;
+        }
+
+        #cityName, #forecastCityName {
             font-size: 2rem;
             color: var(--text-primary);
             margin-bottom: 10px;
@@ -295,6 +389,16 @@
         .favourite-btn.added {
             background: linear-gradient(135deg, #90ee90 0%, #98fb98 100%);
             cursor: default;
+            animation: pulse 0.5s ease-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         .favourite-btn.added::before {
@@ -311,6 +415,18 @@
             color: #667eea;
             margin-bottom: 10px;
             transition: color 0.3s ease;
+            animation: scaleIn 0.6s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         [data-theme="dark"] .temperature {
@@ -338,12 +454,29 @@
             padding: 20px;
             border-radius: 10px;
             transition: background 0.3s ease;
+            margin-bottom: 20px;
         }
 
         .detail-item {
             display: flex;
             flex-direction: column;
             gap: 5px;
+            animation: slideInUp 0.5s ease-out backwards;
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 0.1s; }
+        .detail-item:nth-child(2) { animation-delay: 0.2s; }
+        .detail-item:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .detail-item .label {
@@ -360,16 +493,29 @@
             transition: color 0.3s ease;
         }
 
+        /* WEATHER MAP */
+        .weather-map-container {
+            margin-top: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        #weatherMap {
+            height: 400px;
+            width: 100%;
+        }
+
         /* FORECAST DISPLAY */
         .forecast-display {
-            animation: fadeIn 0.5s;
+            text-align: center;
         }
 
         #forecastCityName {
             font-size: 2rem;
             color: var(--text-primary);
             margin-bottom: 20px;
-            text-align: center;
             transition: color 0.3s ease;
         }
 
@@ -377,6 +523,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 15px;
+            margin-bottom: 20px;
         }
 
         .forecast-card {
@@ -386,7 +533,14 @@
             text-align: center;
             transition: all 0.3s ease;
             border: 2px solid transparent;
+            animation: fadeInUp 0.5s ease-out backwards;
         }
+
+        .forecast-card:nth-child(1) { animation-delay: 0.1s; }
+        .forecast-card:nth-child(2) { animation-delay: 0.2s; }
+        .forecast-card:nth-child(3) { animation-delay: 0.3s; }
+        .forecast-card:nth-child(4) { animation-delay: 0.4s; }
+        .forecast-card:nth-child(5) { animation-delay: 0.5s; }
 
         .forecast-card:hover {
             border-color: var(--input-focus);
@@ -411,6 +565,16 @@
         .forecast-icon {
             font-size: 3rem;
             margin-bottom: 10px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
         }
 
         .forecast-temps {
@@ -439,16 +603,38 @@
             margin-top: 5px;
         }
 
-        /* LOADING, ERROR, HIDDEN */
+        /* LOADING SPINNER */
         .loading {
             text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 4px solid var(--detail-bg);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        [data-theme="dark"] .spinner {
+            border-top-color: #7b68ee;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
             font-size: 1.2rem;
             color: #667eea;
-            padding: 20px;
             transition: color 0.3s ease;
         }
 
-        [data-theme="dark"] .loading {
+        [data-theme="dark"] .loading-text {
             color: #7b68ee;
         }
 
@@ -460,6 +646,13 @@
             text-align: center;
             margin-top: 20px;
             transition: background 0.3s ease, color 0.3s ease;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
         .hidden {
@@ -510,6 +703,16 @@
             .view-toggle {
                 flex-direction: column;
             }
+
+            #weatherMap {
+                height: 300px;
+            }
+
+            .favourites-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -523,7 +726,10 @@
 
         <main>
             <div id="favouritesSection" class="favourites-section hidden">
-                <h3>⭐ Favourite Cities</h3>
+                <div class="favourites-header">
+                    <h3>⭐ Favourite Cities</h3>
+                    <button id="clearAllBtn" class="clear-all-btn">🗑️ Clear All</button>
+                </div>
                 <div id="favouritesList" class="favourites-list"></div>
             </div>
 
@@ -568,17 +774,28 @@
                         <span id="windSpeed"></span>
                     </div>
                 </div>
+
+                <div id="weatherMapContainer" class="weather-map-container">
+                    <div id="weatherMap"></div>
+                </div>
             </div>
 
             <div id="forecastDisplay" class="forecast-display hidden">
                 <h2 id="forecastCityName"></h2>
+                <button id="addFavouriteBtnForecast" class="favourite-btn">⭐ Add to Favourites</button>
                 <div id="forecastCards" class="forecast-cards"></div>
             </div>
 
             <div id="errorMessage" class="error-message hidden"></div>
-            <div id="loading" class="loading hidden">Loading...</div>
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading weather data...</div>
+            </div>
         </main>
     </div>
+
+    <!-- Leaflet JS for maps -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
         const API_URL = '/api/weather';
@@ -603,6 +820,8 @@
         const favouritesSection = document.getElementById('favouritesSection');
         const favouritesList = document.getElementById('favouritesList');
         const addFavouriteBtn = document.getElementById('addFavouriteBtn');
+        const addFavouriteBtnForecast = document.getElementById('addFavouriteBtnForecast');
+        const clearAllBtn = document.getElementById('clearAllBtn');
 
         const viewToggle = document.getElementById('viewToggle');
         const currentBtn = document.getElementById('currentBtn');
@@ -613,8 +832,10 @@
 
         let favourites = [];
         let currentCity = null;
+        let currentCityCoords = null;
         let currentView = 'current';
         let lastSearchedCity = null;
+        let weatherMap = null;
         const MAX_FAVOURITES = 5;
 
         const weatherIcons = {
@@ -661,6 +882,11 @@
                 html.setAttribute('data-theme', 'light');
                 themeToggle.textContent = '🌙';
                 localStorage.setItem('theme', 'light');
+            }
+            
+            // Update map tiles for theme
+            if (weatherMap) {
+                updateMapTheme();
             }
         });
 
@@ -729,6 +955,10 @@
             viewToggle.classList.remove('hidden');
             
             currentCity = data.name;
+            currentCityCoords = {
+                lat: data.coord.lat,
+                lon: data.coord.lon
+            };
             lastSearchedCity = data.name;
             
             if (favourites.includes(currentCity)) {
@@ -740,6 +970,9 @@
             currentView = 'current';
             currentBtn.classList.add('active');
             forecastBtn.classList.remove('active');
+
+            // Initialize or update map
+            initializeMap(currentCityCoords.lat, currentCityCoords.lon, cityNameText);
         }
 
         function showLoading() {
@@ -755,6 +988,54 @@
             loading.classList.add('hidden');
             weatherDisplay.classList.add('hidden');
             forecastDisplay.classList.add('hidden');
+        }
+
+        // MAP FUNCTIONALITY
+        function initializeMap(lat, lon, cityNameText) {
+            // Remove existing map if any
+            if (weatherMap) {
+                weatherMap.remove();
+            }
+
+            // Create new map
+            weatherMap = L.map('weatherMap').setView([lat, lon], 10);
+
+            // Add appropriate tile layer based on theme
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            const tileUrl = isDark 
+                ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+            L.tileLayer(tileUrl, {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 18
+            }).addTo(weatherMap);
+
+            // Add weather tile layer (temperature)
+            L.tileLayer(`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${getAPIKeyFromEnv()}`, {
+                maxZoom: 18,
+                opacity: 0.6
+            }).addTo(weatherMap);
+
+            // Add marker
+            L.marker([lat, lon])
+                .addTo(weatherMap)
+                .bindPopup(`<b>${cityNameText}</b>`)
+                .openPopup();
+        }
+
+        function updateMapTheme() {
+            if (!weatherMap || !currentCityCoords) return;
+            
+            const cityNameText = cityName.textContent;
+            initializeMap(currentCityCoords.lat, currentCityCoords.lon, cityNameText);
+        }
+
+        function getAPIKeyFromEnv() {
+            // This is a placeholder - the actual key is in the serverless function
+            // For the weather overlay tiles, we can't hide it completely
+            // but it's only used for non-sensitive map overlays
+            return 'demo'; // Using demo mode for overlay tiles
         }
 
         // FAVOURITES
@@ -830,19 +1111,34 @@
             }
         }
 
-        function updateAddButton(state) {
-            if (state === 'added' || state === 'already') {
-                addFavouriteBtn.textContent = '✓ Added to Favourites';
-                addFavouriteBtn.classList.add('added');
-                addFavouriteBtn.disabled = true;
-            } else {
-                addFavouriteBtn.textContent = '⭐ Add to Favourites';
-                addFavouriteBtn.classList.remove('added');
-                addFavouriteBtn.disabled = false;
+        function clearAllFavourites() {
+            if (confirm('Are you sure you want to remove all favourite cities?')) {
+                favourites = [];
+                saveFavourites();
+                renderFavourites();
+                updateAddButton('default');
             }
         }
 
+        function updateAddButton(state) {
+            const buttons = [addFavouriteBtn, addFavouriteBtnForecast];
+            
+            buttons.forEach(btn => {
+                if (state === 'added' || state === 'already') {
+                    btn.textContent = '✓ Added to Favourites';
+                    btn.classList.add('added');
+                    btn.disabled = true;
+                } else {
+                    btn.textContent = '⭐ Add to Favourites';
+                    btn.classList.remove('added');
+                    btn.disabled = false;
+                }
+            });
+        }
+
         addFavouriteBtn.addEventListener('click', addToFavourites);
+        addFavouriteBtnForecast.addEventListener('click', addToFavourites);
+        clearAllBtn.addEventListener('click', clearAllFavourites);
 
         // FORECAST
         currentBtn.addEventListener('click', () => {
@@ -970,6 +1266,13 @@
                 const data = await fetchForecastData(city);
                 const processedForecast = processForecastData(data);
                 displayForecast(`${data.city.name}, ${data.city.country}`, processedForecast);
+                
+                // Update favourite button state on forecast view
+                if (favourites.includes(currentCity)) {
+                    updateAddButton('already');
+                } else {
+                    updateAddButton('default');
+                }
             } catch (error) {
                 showError(error.message);
                 currentView = 'current';
